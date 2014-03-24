@@ -1,0 +1,677 @@
+<html>
+
+	<head>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+		<!-- import stylesheets -->
+		<link rel="stylesheet" type="text/css" href="css/jQueryHammerScroll.css">
+		<!-- import js -->
+		<script src="js/jQueryHammerScroll.js"></script>
+		<script src="js/mainNative.js"></script>
+
+
+
+		<script src="cordova.js"></script>
+    <script src="cdv-plugin-fb-connect.js"></script>
+	<!-- facebook js sdk -->
+	<script src="facebook-js-sdk.js"></script>
+
+	<!-- facebook stuff -->
+
+
+	<script>
+
+
+
+
+		// globals 
+
+		var numChairs=0;
+		var numTables=0;
+
+		var arrFriends=[];
+
+		var chairArr=[];
+			//checking config.
+
+			if ((typeof cordova == 'undefined') && (typeof Cordova == 'undefined')) alert('Cordova variable is missing. Check  cordova.js included correctly');
+			if (typeof CDV == 'undefined') alert('CDV variable is missing. Check cdv-plugin-fb-connect.js is included correctly');
+			if (typeof FB == 'undefined') alert('FB variable is missing. Check the Facebook JS SDK file included.');
+
+
+			// ==================================
+
+
+			//event listeners
+
+		FB.Event.subscribe('auth.login', function(response) {
+		       // alert('login event fired !!');
+		});
+		            
+		 FB.Event.subscribe('auth.logout', function(response) {
+		         //alert('logout event fired !!');
+		     });
+		           
+		            
+		 FB.Event.subscribe('auth.statusChange', function(response) {
+
+		 		if (response.authResponse) {
+      			console.log(response);
+      			response1= response;
+      			updateUserInfo(response);
+      
+
+     }
+
+		        // alert('statusChange event fired !!');
+		 });
+
+
+
+		 // ==================================
+
+
+
+		document.addEventListener('deviceready', function() {
+
+			
+          try {
+          //alert('Device is ready!');
+             FB.init({ appId: "1418970075023318", nativeInterface: CDV.FB, useCachedDialogs: false });
+
+            // login();
+                //document.getElementById('data').innerHTML = "";
+        } catch (e) {
+        //alert(e);
+         }
+}, false);
+
+
+		 //============================
+		 function login() {
+                FB.login(
+                         function(response) {
+                         if (response.session) {
+                        // alert('you are logged in');
+                         } else {
+                        // alert('you are not logged in');
+                         }
+                         },
+                         { scope: "email,friends" }
+                         );
+            }
+
+
+
+
+            function logout() {
+                FB.logout(function(response) {
+                        //  alert('logged out');
+ 			});
+ 			}
+
+
+
+
+ 			function getLoginStatus() {
+                FB.getLoginStatus(function(response) {
+                                  if (response.status == 'connected') {
+                                 // alert('You are connected to Fb');
+                                  } else {
+                                  //alert('not connected to FB');
+                                  }
+                                  });
+            }
+
+
+
+             function updateUserInfo(response) {
+
+             //	alert('about to show yo info');
+     FB.api('/me', function(response) {
+      response1 = response;
+      //alert(response1['email']);
+      $('.pane1').html("<h2>Welcome back to ChairMix, "+response1['name']+"</h2>");
+      carousel.next();
+
+     
+      //here we will use user data to populate into different areas of our website
+
+
+     });
+
+
+
+     FB.api('/me/friends', function(response) {
+
+                       // var result_holder = document.getElementById('result_friends');
+
+                       var friend_data = response.data.sort(sortMethod);
+
+ 
+
+                       // var results = '';
+
+                        for (var i = 0; i < friend_data.length; i++) {
+
+                            //results += '<div><img src="https://graph.facebook.com/' + friend_data[i].id + '/picture">' + friend_data[i].name + '</div>';
+
+                            //$('#thelist').html('');
+                            $('#thelist').append('<li friendId ="'+friend_data[i].id+'" sel="false">'+friend_data[i].name+'</li>');
+
+                            $('#thelist li').each(function(index){
+
+                            	if($(this).text().indexOf('Pretty row') != -1){
+                            		$(this).remove();
+                            	}
+                            });
+
+
+
+                       
+
+
+                            //alert(friend_data[i].name);
+
+                        }
+
+
+
+
+
+                            setTimeout(function(){
+                            	//alert('adding event to li')
+                            	    $('#thelist li').on('click', function(e){
+
+                           		//e.stopPropogation();
+		                            	if($(this).attr('sel')=="true"){
+
+		                            		$(this).attr('sel', "false").css('background-color', '#fafafa');
+
+
+		                            	}
+
+		                            	else{
+
+		                            		$(this).css({'background-color':'blue'}).attr('sel', 'true');
+		                            	}
+		                            	
+                            	})
+                            }, 1000)
+
+ 
+
+                        // and display them at our holder element
+
+                  
+
+                    });
+
+
+ }
+
+ function sortMethod(a, b) {
+
+            var x = a.name.toLowerCase();
+
+            var y = b.name.toLowerCase();
+            return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+
+        }
+
+
+
+
+        function chairMixIt(){
+
+        	carousel.showPane(4, 300);
+
+        	numChairs= parseInt($('#chairNum').val());
+        	numTables= parseInt($('#tableNum').val());
+
+        	$('#thelist li').each(function(){
+
+        		if($(this).attr('sel')=="true"){
+
+        			arrFriends.push($(this).text())
+        		}
+        	})
+
+        	//
+
+        	currentChairNum=0;
+        	currentGroup=0;
+        	currentGroupCount=0;
+        	chairArr=[];
+
+        	pickedPeeps=[];
+
+        	loop1:
+        	for(i=0; i< arrFriends.length; i++ ){
+
+        		randNum = Math.floor((Math.random()*arrFriends.length));
+        		
+
+        		for(k in pickedPeeps){
+
+        			if(pickedPeeps[k]== arrFriends[randNum]){
+
+        				//pick diff 
+        				i=i-1;
+        				continue loop1;
+        			}
+        		}
+
+        		if(currentGroupCount>=numChairs){
+
+        			currentGroup = currentGroup+1;
+        			currentGroupCount=0;
+
+        		}
+
+        		if(currentGroupCount==0){
+
+        			chairArr[currentGroup] =[arrFriends[randNum]];
+        		}
+        		else{
+
+        			chairArr[currentGroup].push(arrFriends[randNum]);
+        		}
+
+        		currentChairNum= currentChairNum+1;
+        		currentGroupCount= currentGroupCount+1;
+        		
+
+        		//add person as picked
+        		pickedPeeps.push(arrFriends[randNum]);
+        	}
+
+
+        	showGroups();
+        }
+
+
+        function showGroups(){
+
+
+        	$('#thelist1').css({'visibility':'visible'})
+        	carousel.showPane(5);
+        	
+        	for(i=0; i<chairArr.length; i++){
+
+        		$('#thelist1').append("<li style='background-color:blue'>Group " +i+"</li>");
+
+        		//$('.pane5').append("<br><hr><br><b><u>Group " +i+"</u></b><br>");
+        		for(j in chairArr[i]){
+
+        			$('#thelist1').append("<li>" +chairArr[i][j]+"</li>");
+        			//$('.pane5').append(chairArr[i][j] +"<br>");
+        		}
+
+        	}
+
+        	$('#thelist1 li').each(function(index){
+
+                            	if($(this).text().indexOf('Pretty row') != -1){
+                            		$(this).remove();
+                            	}
+                            });
+        }
+	</script>
+
+
+
+	</head>
+
+	<body>
+
+		<div id="wrapper">
+
+			<div id="header">
+
+
+				<div id="leftHead" class="headItem">
+					<img src="images/refresh.png">
+				</div>
+
+				<div id="rightHead" class="headItem">
+					<img src="images/menu.png">
+				</div>
+
+			</div>
+
+
+			<div id="container">
+
+
+				    <div id="carousel">
+				        <ul>
+				            <li class="pane1"><h2>Connecting with Facebook... </h2></li>
+				            <li class="pane2">
+
+									<div id="scroller">
+										<ul id="thelist">
+											<li>Pretty row 1</li>
+											<li>Pretty row 2</li>
+											<li>Pretty row 3</li>
+											<li>Pretty row 4</li>
+											<li>Pretty row 5</li>
+											<li>Pretty row 6</li>
+											<li>Pretty row 7</li>
+											<li>Pretty row 8</li>
+											<li>Pretty row 9</li>
+											<li>Pretty row 10</li>
+											<li>Pretty row 11</li>
+											<li>Pretty row 12</li>
+											<li>Pretty row 13</li>
+											<li>Pretty row 14</li>
+											<li>Pretty row 15</li>
+											<li>Pretty row 16</li>
+											<li>Pretty row 17</li>
+											<li>Pretty row 18</li>
+											<li>Pretty row 19</li>
+											<li>Pretty row 20</li>
+											<li>Pretty row 21</li>
+											<li>Pretty row 22</li>
+											<li>Pretty row 23</li>
+											<li>Pretty row 24</li>
+											<li>Pretty row 25</li>
+											<li>Pretty row 26</li>
+											<li>Pretty row 27</li>
+											<li>Pretty row 28</li>
+											<li>Pretty row 29</li>
+											<li>Pretty row 30</li>
+											<li>Pretty row 31</li>
+											<li>Pretty row 32</li>
+											<li>Pretty row 33</li>
+											<li>Pretty row 34</li>
+											<li>Pretty row 35</li>
+											<li>Pretty row 36</li>
+											<li>Pretty row 37</li>
+											<li>Pretty row 38</li>
+											<li>Pretty row 39</li>
+											<li>Pretty row 40</li>
+
+
+											<li>Pretty row 16</li>
+											<li>Pretty row 17</li>
+											<li>Pretty row 18</li>
+											<li>Pretty row 19</li>
+											<li>Pretty row 20</li>
+											<li>Pretty row 21</li>
+											<li>Pretty row 22</li>
+											<li>Pretty row 23</li>
+											<li>Pretty row 24</li>
+											<li>Pretty row 25</li>
+											<li>Pretty row 26</li>
+											<li>Pretty row 27</li>
+											<li>Pretty row 28</li>
+											<li>Pretty row 29</li>
+											<li>Pretty row 30</li>
+											<li>Pretty row 31</li>
+											<li>Pretty row 32</li>
+											<li>Pretty row 33</li>
+											<li>Pretty row 34</li>
+											<li>Pretty row 35</li>
+											<li>Pretty row 36</li>
+											<li>Pretty row 37</li>
+											<li>Pretty row 38</li>
+											<li>Pretty row 39</li>
+											<li>Pretty row 40</li>
+
+											<li>Pretty row 16</li>
+											<li>Pretty row 17</li>
+											<li>Pretty row 18</li>
+											<li>Pretty row 19</li>
+											<li>Pretty row 20</li>
+											<li>Pretty row 21</li>
+											<li>Pretty row 22</li>
+											<li>Pretty row 23</li>
+											<li>Pretty row 24</li>
+											<li>Pretty row 25</li>
+											<li>Pretty row 26</li>
+											<li>Pretty row 27</li>
+											<li>Pretty row 28</li>
+											<li>Pretty row 29</li>
+											<li>Pretty row 30</li>
+											<li>Pretty row 31</li>
+											<li>Pretty row 32</li>
+											<li>Pretty row 33</li>
+											<li>Pretty row 34</li>
+											<li>Pretty row 35</li>
+											<li>Pretty row 36</li>
+											<li>Pretty row 37</li>
+											<li>Pretty row 38</li>
+											<li>Pretty row 39</li>
+											<li>Pretty row 40</li>
+
+											<li>Pretty row 16</li>
+											<li>Pretty row 17</li>
+											<li>Pretty row 18</li>
+											<li>Pretty row 19</li>
+											<li>Pretty row 20</li>
+											<li>Pretty row 21</li>
+											<li>Pretty row 22</li>
+											<li>Pretty row 23</li>
+											<li>Pretty row 24</li>
+											<li>Pretty row 25</li>
+											<li>Pretty row 26</li>
+											<li>Pretty row 27</li>
+											<li>Pretty row 28</li>
+											<li>Pretty row 29</li>
+											<li>Pretty row 30</li>
+											<li>Pretty row 31</li>
+											<li>Pretty row 32</li>
+											<li>Pretty row 33</li>
+											<li>Pretty row 34</li>
+											<li>Pretty row 35</li>
+											<li>Pretty row 36</li>
+											<li>Pretty row 37</li>
+											<li>Pretty row 38</li>
+											<li>Pretty row 39</li>
+											<li>Pretty row 40</li>
+
+										</ul>
+									</div>
+
+
+				            </li>
+				            <li class="pane3">
+
+				            <div id="pickerCont">
+					            <div class="textHeader">
+					            Number of Chairs
+					            </div>
+				           		 <input type="text" class="pickerThing" placeholder="#" id="chairNum">
+
+
+					            <div class="textHeader" style="display:none">
+					            Number of Tables
+					            </div>
+					            <input type="text" class="pickerThing" placeholder="#" id="tableNum">
+					            <br>
+				          		<a href="javascript:chairMixIt()" id="chairLink">ChairMix it</a>
+
+
+
+				            </div>
+
+				            </li>
+				            <li class="pane4"><h2>... keep swiping...</h2></li>
+				            <li class="pane5">
+						         
+
+
+
+
+
+
+
+<div id="scroller1">
+										<ul id="thelist1" style="visiblity:hidden">
+											<li>Pretty row 1</li>
+											<li>Pretty row 2</li>
+											<li>Pretty row 3</li>
+											<li>Pretty row 4</li>
+											<li>Pretty row 5</li>
+											<li>Pretty row 6</li>
+											<li>Pretty row 7</li>
+											<li>Pretty row 8</li>
+											<li>Pretty row 9</li>
+											<li>Pretty row 10</li>
+											<li>Pretty row 11</li>
+											<li>Pretty row 12</li>
+											<li>Pretty row 13</li>
+											<li>Pretty row 14</li>
+											<li>Pretty row 15</li>
+											<li>Pretty row 16</li>
+											<li>Pretty row 17</li>
+											<li>Pretty row 18</li>
+											<li>Pretty row 19</li>
+											<li>Pretty row 20</li>
+											<li>Pretty row 21</li>
+											<li>Pretty row 22</li>
+											<li>Pretty row 23</li>
+											<li>Pretty row 24</li>
+											<li>Pretty row 25</li>
+											<li>Pretty row 26</li>
+											<li>Pretty row 27</li>
+											<li>Pretty row 28</li>
+											<li>Pretty row 29</li>
+											<li>Pretty row 30</li>
+											<li>Pretty row 31</li>
+											<li>Pretty row 32</li>
+											<li>Pretty row 33</li>
+											<li>Pretty row 34</li>
+											<li>Pretty row 35</li>
+											<li>Pretty row 36</li>
+											<li>Pretty row 37</li>
+											<li>Pretty row 38</li>
+											<li>Pretty row 39</li>
+											<li>Pretty row 40</li>
+
+											<li>Pretty row 16</li>
+											<li>Pretty row 17</li>
+											<li>Pretty row 18</li>
+											<li>Pretty row 19</li>
+											<li>Pretty row 20</li>
+											<li>Pretty row 21</li>
+											<li>Pretty row 22</li>
+											<li>Pretty row 23</li>
+											<li>Pretty row 24</li>
+											<li>Pretty row 25</li>
+											<li>Pretty row 26</li>
+											<li>Pretty row 27</li>
+											<li>Pretty row 28</li>
+											<li>Pretty row 29</li>
+											<li>Pretty row 30</li>
+											<li>Pretty row 31</li>
+											<li>Pretty row 32</li>
+											<li>Pretty row 33</li>
+											<li>Pretty row 34</li>
+											<li>Pretty row 35</li>
+											<li>Pretty row 36</li>
+											<li>Pretty row 37</li>
+											<li>Pretty row 38</li>
+											<li>Pretty row 39</li>
+											<li>Pretty row 40</li>
+
+
+											<li>Pretty row 16</li>
+											<li>Pretty row 17</li>
+											<li>Pretty row 18</li>
+											<li>Pretty row 19</li>
+											<li>Pretty row 20</li>
+											<li>Pretty row 21</li>
+											<li>Pretty row 22</li>
+											<li>Pretty row 23</li>
+											<li>Pretty row 24</li>
+											<li>Pretty row 25</li>
+											<li>Pretty row 26</li>
+											<li>Pretty row 27</li>
+											<li>Pretty row 28</li>
+											<li>Pretty row 29</li>
+											<li>Pretty row 30</li>
+											<li>Pretty row 31</li>
+											<li>Pretty row 32</li>
+											<li>Pretty row 33</li>
+											<li>Pretty row 34</li>
+											<li>Pretty row 35</li>
+											<li>Pretty row 36</li>
+											<li>Pretty row 37</li>
+											<li>Pretty row 38</li>
+											<li>Pretty row 39</li>
+											<li>Pretty row 40</li>
+
+											<li>Pretty row 16</li>
+											<li>Pretty row 17</li>
+											<li>Pretty row 18</li>
+											<li>Pretty row 19</li>
+											<li>Pretty row 20</li>
+											<li>Pretty row 21</li>
+											<li>Pretty row 22</li>
+											<li>Pretty row 23</li>
+											<li>Pretty row 24</li>
+											<li>Pretty row 25</li>
+											<li>Pretty row 26</li>
+											<li>Pretty row 27</li>
+											<li>Pretty row 28</li>
+											<li>Pretty row 29</li>
+											<li>Pretty row 30</li>
+											<li>Pretty row 31</li>
+											<li>Pretty row 32</li>
+											<li>Pretty row 33</li>
+											<li>Pretty row 34</li>
+											<li>Pretty row 35</li>
+											<li>Pretty row 36</li>
+											<li>Pretty row 37</li>
+											<li>Pretty row 38</li>
+											<li>Pretty row 39</li>
+											<li>Pretty row 40</li>										</ul>
+									</div>
+
+
+
+
+
+
+
+
+
+
+
+
+				            </li>
+				        </ul>
+				    </div>
+
+
+
+			</div>
+
+			<div id="footer">
+
+				<div class="footItem activeElem">
+					<img src="images/home.png">
+				</div>
+				<div class="footItem">
+					<img src="images/me.png">
+				</div>
+				<div class="footItem">
+					<img src="images/chair.png">
+				</div>
+				<div class="footItem">
+					<img src="images/settings.png">
+				</div>
+
+			</div>
+
+
+
+		</div>
+
+	</body>
+
+
+</html>

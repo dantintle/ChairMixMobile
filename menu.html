@@ -1,0 +1,235 @@
+<html>
+
+	<head>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+		<!-- import stylesheets -->
+		<link rel="stylesheet" type="text/css" href="css/jQueryHammerScroll.css">
+		<!-- import js -->
+		<script src="js/jQueryHammerScroll.js"></script>
+		<script src="js/mainNative.js"></script>
+
+	</head>
+
+	<body>
+
+		<div id="wrapper">
+
+			<div id="header">
+
+
+				<div id="leftHead" class="headItem">
+					<img src="images/refresh.png">
+				</div>
+
+				<div id="rightHead" class="headItem">
+					<img src="images/menu.png">
+				</div>
+
+			</div>
+			<style>
+			#menu1{
+				height:100%;
+				max-height: 100%;
+				width:45%;
+				position:fixed;
+				top:0px;
+				right:-50%;
+				background-color:#00AEEF;
+				z-index:500;
+				opacity:.8;
+
+			}
+
+			.menuItem{
+
+				padding:20px;
+				border-width: 0px 0px 2px 0px;
+				border-style: solid;
+				border-color:white;
+				height:54px;
+				width:100%;
+				display:block;
+				color:white;
+				font-size:16px;
+
+			}
+
+			.menuText{
+				display:inline-block;
+				float:right;
+				padding-right:10px;
+				width:50%;
+				text-align:center;
+			}
+			.menuArrow{
+				display:inline-block;
+				float:left;
+				width:20%;
+				text-align:left;
+			}
+
+			</style>
+
+			<div id="menu1">
+				<div class="menuItem">
+					
+					<div class="menuText">Home</div>
+					<div class="menuArrow"> < </div>
+				</div>
+				<div class="menuItem">
+					
+
+						<div class="menuText">Contacts</div>
+					<div class="menuArrow"> < </div>
+				</div>
+				<div class="menuItem">
+					
+					<div class="menuText">Add Contacts</div>
+					<div class="menuArrow"> < </div>
+				</div>
+				<div class="menuItem">
+					
+					<div class="menuText">Events</div>
+					<div class="menuArrow"> < </div>
+				</div>
+				<div class="menuItem">
+					
+					<div class="menuText">Settings</div>
+					<div class="menuArrow"> < </div>
+				</div>
+
+
+			</div>
+
+			<div id="container">
+
+
+				    <div id="carousel">
+				        <ul>
+				            <li class="pane1"><h2>...Swipe...</h2></li>
+				            <li class="pane2">
+
+									<div id="scroller">
+										<ul id="thelist">
+											<li>Pretty row 1</li>
+											<li>Pretty row 2</li>
+											<li>Pretty row 3</li>
+											<li>Pretty row 4</li>
+											<li>Pretty row 5</li>
+											<li>Pretty row 6</li>
+											<li>Pretty row 7</li>
+											<li>Pretty row 8</li>
+											<li>Pretty row 9</li>
+											<li>Pretty row 10</li>
+											<li>Pretty row 11</li>
+											<li>Pretty row 12</li>
+											<li>Pretty row 13</li>
+											<li>Pretty row 14</li>
+											<li>Pretty row 15</li>
+											<li>Pretty row 16</li>
+											<li>Pretty row 17</li>
+											<li>Pretty row 18</li>
+											<li>Pretty row 19</li>
+											<li>Pretty row 20</li>
+											<li>Pretty row 21</li>
+											<li>Pretty row 22</li>
+											<li>Pretty row 23</li>
+											<li>Pretty row 24</li>
+											<li>Pretty row 25</li>
+											<li>Pretty row 26</li>
+											<li>Pretty row 27</li>
+											<li>Pretty row 28</li>
+											<li>Pretty row 29</li>
+											<li>Pretty row 30</li>
+											<li>Pretty row 31</li>
+											<li>Pretty row 32</li>
+											<li>Pretty row 33</li>
+											<li>Pretty row 34</li>
+											<li>Pretty row 35</li>
+											<li>Pretty row 36</li>
+											<li>Pretty row 37</li>
+											<li>Pretty row 38</li>
+											<li>Pretty row 39</li>
+											<li>Pretty row 40</li>
+										</ul>
+									</div>
+
+
+				            </li>
+				            <li class="pane3"><h2>...or swipe...</h2></li>
+				            <li class="pane4"><h2>..or drag...</h2></li>
+				            <li class="pane5"><h2>...end...</h2></li>
+				        </ul>
+				    </div>
+
+
+
+			</div>
+
+			<div id="footer">
+
+				<div class="footItem activeElem">
+					<img src="images/home.png">
+				</div>
+				<div class="footItem">
+					<img src="images/me.png">
+				</div>
+				<div class="footItem">
+					<img src="images/notification.png">
+				</div>
+				<div class="footItem">
+					<img src="images/settings.png">
+				</div>
+
+			</div>
+
+
+
+		</div>
+
+	</body>
+
+
+	<script>
+
+			$(window).load(initChair);
+
+			function initChair(){
+
+
+				menuButLis()
+			}
+
+
+			function menuButLis(){
+
+
+				$('#rightHead').on('click', function(){
+
+						$('#container, #header, #footer').off('click');
+					$('#menu1').animate({'right':'0%'});
+					$('#rightHead').off('click');
+					setTimeout(function(){
+						$('#container, #header, #footer').on('click', function(){
+						$('#menu1').animate({'right':'-50%'}, 300, function(){
+
+							menuButLis();
+						});
+
+					});
+						//end event list
+
+					}, 500);
+
+				});
+
+			}
+					
+
+
+	</script>
+
+
+</html>

@@ -1,0 +1,267 @@
+<html>
+
+	<head>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+		<!-- import stylesheets -->
+		<link rel="stylesheet" type="text/css" href="css/jQueryHammerScroll.css">
+
+		<link rel="stylesheet" type="text/css" href="css/jquery-ui-1.10.4.custom.min.css">
+		
+		<!-- import js -->
+		<script src="js/jQueryHammerScroll.js"></script>
+		<script src="js/mainNative.js"></script>
+
+		<script src="js/jquery-ui-1.10.4.custom.js"></script>
+
+		<style>
+			#addContactForm{
+				top:35%;
+				width:100%;
+				height:35%;
+				bottom:15%;
+				position:absolute;
+				left:30%;
+			}
+
+
+		</style>
+
+	</head>
+
+	<body>
+
+		<div id="wrapper">
+
+			<div id="header">
+
+
+				<div id="leftHead" class="headItem">
+					<img src="images/refresh.png">
+				</div>
+
+				<div id="rightHead" class="headItem">
+					<img src="images/menu.png">
+				</div>
+
+			</div>
+
+
+			<div id="container">
+
+
+				    <div id="carousel">
+				        <ul>
+				            <li class="pane1"><h2>...Swipe...</h2></li>
+				            <li class="pane2">
+
+									<div id="scroller">
+										<ul id="thelist">
+											<li>Pretty row 1</li>
+											<li>Pretty row 2</li>
+											<li>Pretty row 3</li>
+											<li>Pretty row 4</li>
+											<li>Pretty row 5</li>
+											<li>Pretty row 6</li>
+											<li>Pretty row 7</li>
+											<li>Pretty row 8</li>
+											<li>Pretty row 9</li>
+											<li>Pretty row 10</li>
+											<li>Pretty row 11</li>
+											<li>Pretty row 12</li>
+											<li>Pretty row 13</li>
+											<li>Pretty row 14</li>
+											<li>Pretty row 15</li>
+											<li>Pretty row 16</li>
+											<li>Pretty row 17</li>
+											<li>Pretty row 18</li>
+											<li>Pretty row 19</li>
+											<li>Pretty row 20</li>
+											<li>Pretty row 21</li>
+											<li>Pretty row 22</li>
+											<li>Pretty row 23</li>
+											<li>Pretty row 24</li>
+											<li>Pretty row 25</li>
+											<li>Pretty row 26</li>
+											<li>Pretty row 27</li>
+											<li>Pretty row 28</li>
+											<li>Pretty row 29</li>
+											<li>Pretty row 30</li>
+											<li>Pretty row 31</li>
+											<li>Pretty row 32</li>
+											<li>Pretty row 33</li>
+											<li>Pretty row 34</li>
+											<li>Pretty row 35</li>
+											<li>Pretty row 36</li>
+											<li>Pretty row 37</li>
+											<li>Pretty row 38</li>
+											<li>Pretty row 39</li>
+											<li>Pretty row 40</li>
+										</ul>
+									</div>
+
+
+				            </li>
+
+
+				            <style>
+
+				            		.tableElem{
+
+				            			width:20%;
+				            			height:30%;
+				            			border-radius:20%;
+				            			background-color:blue;
+				            			position:absolute;
+				            		}
+				            		#tables{
+				            			width:100%;
+				            			height:100%;
+				            		}
+
+				            		#leftNav{
+				            			background-color: white;
+				            			position:absolute;
+				            			top:0px;
+				            			left:0px;
+				            			width:30%;
+				            			height:100%;
+				            		}
+				            		#tableContainer{
+				            			background-color: orange;
+				            			position:absolute;
+				            			top:0px;
+				            			left:30%;
+				            			width:70%;
+				            			height:100%;
+				            		}
+
+				            </style>
+				            <li class="pane3">
+				            	
+
+				            		<div id="tables">
+				            			<div id="leftNav">
+				            			<button onclick="addTable()">add table</button>
+
+				            			</div>
+
+				            			<div id="tableContainer">
+
+				            			</div>
+
+
+
+				            		</div>
+
+
+				            </li>
+				            <li class="pane4"><h2>Add Contact:</h2>
+				            <script>
+				            varName = $('#addNameInput').val();
+				            varEmail = $('#addEmailInput').val();
+				            </script>
+				            	<div id="addContactForm">
+				            		Name: <input type="text" id="addNameInput" placeholder="Contact Name"  />
+				            			<br>
+				            		Email: <input type="text" id="addEmailInput" placeholder="Email Address"  />
+				            		<br>
+				            		<button id="addContactSubmit" onclick="saveContact($('#addNameInput').val(), $('#addEmailInput').val())">Add Contact
+				            		</button>
+
+				            	</div>
+
+				            </li>
+				            <li class="pane5"><h2>Contacts</h2>
+				            	<button id="getContacts" onclick="getAllContacts()">Get Contacts</button>
+				            </li>
+				        </ul>
+				    </div>
+
+
+
+			</div>
+
+			<div id="footer">
+
+				<div class="footItem activeElem">
+					<img src="images/home.png">
+				</div>
+				<div class="footItem">
+					<img src="images/me.png">
+				</div>
+				<div class="footItem">
+					<img src="images/notification.png">
+				</div>
+				<div class="footItem">
+					<img src="images/settings.png">
+				</div>
+
+			</div>
+
+
+
+		</div>
+
+	</body>
+
+
+	<script>
+	function addTable(){
+
+		r= $('<div />').attr('id', 'hghg').addClass('tableElem').on('click', alert).html('<div>var</div>');
+		//r.draggable();
+
+		$('#tableContainer').append(r);
+		//r.on('click', alert)
+	}
+
+
+
+	function saveContact(name, email){
+
+		num = 0;
+		for(i=0; i< localStorage.length; i++){
+			num = num+1;
+			//get current number
+		}
+		localStorage.setItem('name'+num, name);
+		localStorage.setItem('email'+num, email);
+	}
+
+	function getAllContacts(){
+
+		retArr =[];
+		num = 0;
+		for(i=0; i< localStorage.length; i++){
+
+			contact = localStorage.getItem('name'+num);
+			if(contact !=null){
+				newCon = {'name':localStorage.getItem('name'+num), 'email': localStorage.getItem('email'+num)}
+				retArr.push(newCon);
+			}
+
+			num= num+1;
+		}
+		populateContacts(retArr);
+		return retArr;
+
+
+	
+	}
+
+
+	function populateContacts(contArr){
+		for(i=0; i< contArr.length; i++ ){
+					$('.pane5').append("name: "+ contArr[i]['name'] +"<br>")
+					$('.pane5').append("email: "+ contArr[i]['email'] +"<br><hr><br>")
+
+		}
+
+	}
+
+	</script>
+
+
+</html>

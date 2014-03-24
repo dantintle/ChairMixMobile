@@ -1,0 +1,277 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <title>jQuery UI Touch Punch - Mobile Device Touch Event Support for jQuery UI</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    
+    <style>body { background:#fff; font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; }</style>
+
+    <link href="css/jquery-ui-1.10.2.custom.min.css" rel="stylesheet">
+    <!--<link href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.2/css/lightness/jquery-ui-1.10.2.custom.min.css" rel="stylesheet">-->
+    <script src="js/jquery.js"></script>
+    <script src="js/jquery-ui-1.10.4.custom.js"></script>
+    <script src="js/touchpunch.jss"></script>
+    <!-- cordova and needed plugins -->
+	<script src="cordova.js"></script>
+    <script src="cdv-plugin-fb-connect.js"></script>
+	<!-- facebook js sdk -->
+	<script src="facebook-js-sdk.js"></script>
+
+	<!-- facebook stuff -->
+
+
+	<script>
+			//checking config.
+
+			if ((typeof cordova == 'undefined') && (typeof Cordova == 'undefined')) alert('Cordova variable is missing. Check  cordova.js included correctly');
+			if (typeof CDV == 'undefined') alert('CDV variable is missing. Check cdv-plugin-fb-connect.js is included correctly');
+			if (typeof FB == 'undefined') alert('FB variable is missing. Check the Facebook JS SDK file included.');
+
+
+			// ==================================
+
+
+			//event listeners
+
+		FB.Event.subscribe('auth.login', function(response) {
+		        alert('login event fired !!');
+		});
+		            
+		 FB.Event.subscribe('auth.logout', function(response) {
+		         alert('logout event fired !!');
+		     });
+		           
+		            
+		 FB.Event.subscribe('auth.statusChange', function(response) {
+		         alert('statusChange event fired !!');
+		 });
+
+
+
+		 // ==================================
+
+
+
+		$(document).ready( function() {
+
+				login();
+			/*
+		          try {
+		          alert('Device is ready! Write your app id below .For demo i put my app id there.');
+		             FB.init({ appId: "1418970075023318", nativeInterface: CDV.FB, useCachedDialogs: false });
+		                document.getElementById('data').innerHTML = "";
+		        } catch (e) {
+		        alert(e);
+		         }
+
+		         */
+		});
+
+
+		 //============================
+		 function login() {
+                FB.login(
+                         function(response) {
+                         if (response.session) {
+                         alert('you are logged in');
+                         } else {
+                         alert('you are not logged in');
+                         }
+                         },
+                         { scope: "email" }
+                         );
+            }
+
+
+
+
+            function logout() {
+                FB.logout(function(response) {
+                          alert('logged out');
+ 			});
+ 			}
+
+
+
+
+ 			function getLoginStatus() {
+                FB.getLoginStatus(function(response) {
+                                  if (response.status == 'connected') {
+                                  alert('You are connected to Fb');
+                                  } else {
+                                  alert('not connected to FB');
+                                  }
+                                  });
+            }
+
+
+
+
+
+	</script>
+  </head>
+  <body>
+
+    <div class="container">
+      
+
+        <style>
+        h1 { padding: .2em; margin: 0; }
+        #products { float:left; width: 50%; margin-right: .5em; padding:0; }
+        #cart { width: 45%; float: left; }
+        /* style the list to maximize the droppable hitarea */
+        #cart ol { margin: 0; padding: 1em 0 1em 3em; }
+        .prodlist{padding:0;}
+        </style>
+        <script>
+        $(function() {
+          $( "#catalog" ).accordion();
+          $( "#catalog li" ).draggable({
+            appendTo: "body",
+            helper: "clone"
+          });
+          $( "#cart ol" ).droppable({
+            activeClass: "ui-state-default",
+            hoverClass: "ui-state-hover",
+            accept: ":not(.ui-sortable-helper)",
+            drop: function( event, ui ) {
+              $( this ).find( ".placeholder" ).remove();
+              $( "<li></li>" ).text( ui.draggable.text() ).appendTo( this );
+            }
+          }).sortable({
+            items: "li:not(.placeholder)",
+            sort: function() {
+              // gets added unintentionally by droppable interacting with sortable
+              // using connectWithSortable fixes this, but doesn't allow you to customize active/hoverClass options
+              $( this ).removeClass( "ui-state-default" );
+            }
+          });
+        });
+        </script>
+
+
+
+      <div class="demo">
+        
+      <div id="products">
+        <h1 class="ui-widget-header">Products</h1>  
+        <div id="catalog">
+          <h3><a href="#">T-Shirts</a></h3>
+          <div>
+            <ul class="prodlist">
+              <li>Lolcat Shirt</li>
+              <li>Cheezeburger Shirt</li>
+              <li>Buckit Shirt</li>
+            </ul>
+          </div>
+          <h3><a href="#">Bags</a></h3>
+          <div>
+            <ul class="prodlist">
+              <li>Zebra Striped</li>
+              <li>Black Leather</li>
+              <li>Alligator Leather</li>
+            </ul>
+          </div>
+          <h3><a href="#">Gadgets</a></h3>
+          <div>
+            <ul class="prodlist">
+              <li>iPhone</li>
+              <li>iPod</li>
+              <li>iPad</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div id="cart">
+        <h1 class="ui-widget-header">Shopping Cart</h1>
+        <div class="ui-widget-content">
+          <ol>
+            <li class="placeholder">Add your items here</li>
+          </ol>
+        </div>
+      </div>
+
+      </div><!-- End demo -->
+
+
+
+      <!-- <div class="demo-description"> -->
+      <!-- <p>Demonstrate how to use an accordion to structure products into a catalog and make use drag and drop for adding them to a shopping cart, where they are sortable.</p> -->
+      <!-- </div>End demo-description -->
+
+
+      
+    </div>
+
+    <script type="text/javascript">
+
+
+
+   /iPad|iPhone|Android/.test( navigator.userAgent ) && (function( $ ) {
+
+var proto =  $.ui.mouse.prototype,
+_mouseInit = proto._mouseInit;
+
+$.extend( proto, {
+    _mouseInit: function() {
+        this.element
+        .bind( "touchstart." + this.widgetName, $.proxy( this, "_touchStart" ) );
+        _mouseInit.apply( this, arguments );
+    },
+
+    _touchStart: function( event ) {
+        /* if ( event.originalEvent.targetTouches.length != 1 ) {
+            return false;
+        } */
+
+        this.element
+        .bind( "touchmove." + this.widgetName, $.proxy( this, "_touchMove" ) )
+        .bind( "touchend." + this.widgetName, $.proxy( this, "_touchEnd" ) );
+
+        this._modifyEvent( event );
+
+        $( document ).trigger($.Event("mouseup")); //reset mouseHandled flag in ui.mouse
+        this._mouseDown( event );
+
+        //return false;           
+    },
+
+    _touchMove: function( event ) {
+        this._modifyEvent( event );
+        this._mouseMove( event );   
+    },
+
+    _touchEnd: function( event ) {
+        this.element
+        .unbind( "touchmove." + this.widgetName )
+        .unbind( "touchend." + this.widgetName );
+        this._mouseUp( event ); 
+    },
+
+    _modifyEvent: function( event ) {
+        event.which = 1;
+        var target = event.originalEvent.targetTouches[0];
+        event.pageX = target.clientX;
+        event.pageY = target.clientY;
+    }
+
+});
+
+})( jQuery );
+
+</script>
+
+    </body>
+</html>
